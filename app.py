@@ -26,10 +26,18 @@ def get_tasks():
   task_list = [task.to_dict() for task in tasks]
   output = {
     "tasks": task_list,
-    "total_tasks": 0
+    "total_tasks": len(task_list)
   }
 
   return output
+
+@app.route('/tasks/<int:taskid>', methods=['GET'])
+def get_task(taskid):
+  for task_db in tasks:
+    if(task_db.id == taskid):
+      return jsonify(task_db.to_dict())
+
+  return jsonify({ 'message': 'Task was not found'}), 404
 
 if __name__ == '__main__':
   app.run(debug=True)
