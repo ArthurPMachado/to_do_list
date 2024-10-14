@@ -13,12 +13,23 @@ def create_task():
   new_task = Task(id=task_id_control, title=data['title'], description=data.get('description', ''))
   task_id_control += 1
   tasks.append(new_task)
-  print(tasks)
+
   response = jsonify({
     "status": 201,
     "message": 'New task created successfully'
   })
+
   return response
+
+@app.route('/tasks', methods=['GET'])
+def get_tasks():
+  task_list = [task.to_dict() for task in tasks]
+  output = {
+    "tasks": task_list,
+    "total_tasks": 0
+  }
+
+  return output
 
 if __name__ == '__main__':
   app.run(debug=True)
