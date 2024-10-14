@@ -14,12 +14,11 @@ def create_task():
   task_id_control += 1
   tasks.append(new_task)
 
-  response = jsonify({
-    "status": 201,
+  response = {
     "message": 'New task created successfully'
-  })
+  }
 
-  return response
+  return jsonify(response), 201
 
 @app.route('/tasks', methods=['GET'])
 def get_tasks():
@@ -34,10 +33,32 @@ def get_tasks():
 @app.route('/tasks/<int:taskid>', methods=['GET'])
 def get_task(taskid):
   for task_db in tasks:
-    if(task_db.id == taskid):
+    if task_db.id == taskid:
       return jsonify(task_db.to_dict())
 
   return jsonify({ 'message': 'Task was not found'}), 404
+
+@app.route('/tasks/<int:taskid>', methods=['PUT'])
+def update_task(taskid):
+  task = None
+  for task_db in tasks:
+    if task_db.id == taskid:
+      task = task_db
+  
+  if task == None:
+    return jsonify({ 'message': 'Task was not found'}), 404
+  
+  data = request.get_json()
+  task.title = data['title']
+  task.description = data.get('description')
+  task.completed = data['completed']
+  
+  response = {
+    'message': 'Task updated successfully'
+  }
+
+  return jsonify(response), 204
+
 
 if __name__ == '__main__':
   app.run(debug=True)
