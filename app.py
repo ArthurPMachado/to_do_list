@@ -15,7 +15,8 @@ def create_task():
   tasks.append(new_task)
 
   response = {
-    "message": 'New task created successfully'
+    "message": 'New task created successfully',
+    "id": new_task.id
   }
 
   return jsonify(response), 201
