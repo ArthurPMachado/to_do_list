@@ -35,3 +35,35 @@ def test_get_task():
 
     assert response.status_code == 200
     assert task_id == response_json['id']
+
+def test_update_task():
+  if tasks:
+    task_id = tasks[0]
+    payload = {
+      'completed': False,
+      'title': 'Updated title',
+      'description': 'Updated description'
+    }
+
+    response = requests.put(f"{BASE_URL}/tasks/{task_id}", json=payload)
+
+    assert response.status_code == 204
+
+    response = requests.get(f"{BASE_URL}/tasks/{task_id}")
+    response_json = response.json()
+
+    assert response.status_code == 200
+    assert response_json['title'] == payload['title']
+    assert response_json['description'] == payload['description']
+    assert response_json['completed'] == payload['completed']
+
+def test_delete_task():
+  if tasks:
+    task_id = tasks[0]
+    response = requests.delete(f"{BASE_URL}/tasks/{task_id}")
+
+    assert response.status_code == 204
+
+    response = requests.get(f"{BASE_URL}/tasks/{task_id}")
+
+    assert response.status_code == 404
